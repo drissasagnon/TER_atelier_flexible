@@ -1,0 +1,2 @@
+set(aiguillages_MESSAGE_FILES "/home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/aiguillages/msg/Capteurs.msg;/home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/aiguillages/msg/Actionneurs.msg;/home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/aiguillages/msg/ExchangeSh.msg;/home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/aiguillages/msg/Msg_SensorState.msg")
+set(aiguillages_SERVICE_FILES "")

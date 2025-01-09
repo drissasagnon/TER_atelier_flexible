@@ -1,0 +1,8 @@
+prefix=/home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/install
+
+Name: shuttles
+Description: Description of shuttles
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: roscpp message_runtime
