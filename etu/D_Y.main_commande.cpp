@@ -159,11 +159,15 @@ int main(int argc, char **argv)
 	////// | MARQUAGE INITIAL | ////////
     ************************************************* */
 	M[0]=1;
+	M[100] = Prod_qte[0];
+	
 	display();
 
     ///////////////////////////////////////////////////////////////////
     ///////////////////// | DEBUT INIT ETU | ///////////////////
     ///////////////////////////////////////////////////////////////////
+	nb_type = Prod_qte.size()
+	
 
 
     ///////////////////////////////////////////////////////////////////
@@ -206,9 +210,13 @@ int main(int argc, char **argv)
 				M[102]++;
 				display();
 			}
-			if(M[102]){
+			if(M[102] && M[100]){
 				
 				M[102]--;
+				M[100]--;
+				robot.AjouterProduit(Prod_seqdeposte[i][i], Prod_type[i]);
+                robot.FaireTache(Prod_seqdeposte[i][i], Prod_dureeparposte[i][i]);
+                cout << "duree poste=" << Prod_dureeparposte[i][i] << endl;
 				display();
 			}
 			

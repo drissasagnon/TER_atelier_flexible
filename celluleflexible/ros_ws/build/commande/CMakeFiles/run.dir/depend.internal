@@ -447,6 +447,7 @@ commande/CMakeFiles/run.dir/src/main_commande.cpp.o
  /home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/commande/src/capteurs.h
  /home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/commande/src/commande.h
  /home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/commande/src/main_commande.cpp
+ /home/dsn9741/3A/TER_atelier_flexible/celluleflexible/ros_ws/src/commande/src/prodconfig/productconfig.h
  /opt/ros/noetic/include/ros/advertise_options.h
  /opt/ros/noetic/include/ros/advertise_service_options.h
  /opt/ros/noetic/include/ros/assert.h

@@ -1,5 +1,7 @@
 /*
 ## Projet Long ENSEEIHT - GEA Department - 2020
+ 
+## Mis à jour par SUN 2023
 
 ## Fichier de configuration de la simulation
 ##
@@ -16,12 +18,12 @@
 ##
 ## Les 'd' correspondent aux destinations successives du produit cad les taches à effectuer ( dans l'ordre biensûr) , on peut en spécifier entre 1 et 8. ex si on met 1 2, cela indique que le produit doit être traite au poste 1 puis au poste 2 avant de sortir de la cellule.
 ## Les 't' correspondent aux durées des taches en secondes. Il doit y en avoir autant que de 'd'. ex 1 : 1 indique que la tache 1 dure 1 seconde.
-## Le 'c' correspond à la commande de produit, c'est à dire le nombre de Produit que doit fournir l'étudiant. Si 'c' vaut 3 pour le produit 1, alors il faudra sortir de la simulation 3 produit 1.
+## Le 'c' correspond à la commande de produit, c'est à dire le nombre de Produit que doit fournir l'étudiant. Si 'c' vaut 3 pour le produit 1, alors il faudra sortir de la simulation 3 produits de type 1.
 ##
 ## ATTENTION aux limitation suivantes :
-## MAX 6 PRODUITS AVEC 8 DESTINATIONS DIFFÉRENTES CHACUN ! ! ! ! !
-## SI il y a une erreur lors de la déclaration de ces variable sur ce fichier, le checker l'identifiera et vous dira quoi changer
-## Le nombre max de tâche par produit doit être définit dans checker.py par la variable MAX_TACHES !! Ça correspond aux nombre de cubes qu'il y a par navette et poste dans V-Rep
+## MAX 6 PRODUITS AVEC 8 DESTINATIONS CHACUN ! ! ! ! !
+## SI il y a une erreur lors de la déclaration de ces variables sur ce fichier, le checker l'identifiera et vous dira quoi changer
+## Le nombre max de tâche par produit doit être défini dans checker.py par la variable MAX_TACHES !! Ça correspond au nombre de cubes qu'il y a par navette et poste dans V-Rep
 ##
 ## exemples de ligne produit :
 ## 1 : 1 2 3 : 11.5 12 13 : 1
@@ -39,26 +41,17 @@
 
 // Start
 
-// 2 : 1 4 : 4 5 : 2
-// 6 : 7 6 5 : 3 6 3 : 1
-// 4 : 1 2 : 7 3 : 1
+// 3 : 3 3 3 4 : 3 7 8 15 : 1
+
+// End
 
 
-const vector<int> Prod_type{    2,
-                                6,
-                                4 };
+const vector<int> Prod_type{ 3 };
 
-const vector<int> Prod_qte{ 2,
-                            1,
-                            1 };
+const vector<vector<int>> Prod_seqdeposte{  { POSTE_3, POSTE_3, POSTE_3, POSTE_4 } };
 
-const vector<vector<int>> Prod_seqdeposte{  { POSTE_1, POSTE_4 },
-                                            { POSTE_7, POSTE_6, POSTE_5 },
-                                            { POSTE_1, POSTE_2 } };
+const vector<vector<int>> Prod_dureeparposte{  { 3, 7, 8, 15 } };
 
-const vector<vector<int>> Prod_dureeparposte{   { 4, 5 },
-                                                { 3, 6, 3 },
-                                                { 7, 3 } };
-
+const vector<int> Prod_qte{ 1 };
 
 
