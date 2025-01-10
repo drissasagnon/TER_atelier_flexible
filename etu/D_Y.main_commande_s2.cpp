@@ -151,7 +151,7 @@ int main(int argc, char **argv)
     
 
     cmd.Initialisation();
-    for(int i=0;i<PlaceFin;i++) M[i]=0;
+    for(int i=0;i<PlaceFin;i++) M[i]=0;M[204]=index_prod + 1;
 
     /* *************************************************
     ////// | MARQUAGE INITIAL | ////////
@@ -181,7 +181,7 @@ int main(int argc, char **argv)
 
             if(M[0])
             {
-            /*!
+                        /*!M[204]=index_prod + 1;
                         * \b T1: init aiguillages et produit
                         * \arg positionnement des aiguillages et ajout des produits
                         * \arg \b Precondition: M[0]

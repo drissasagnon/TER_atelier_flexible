@@ -63,7 +63,8 @@ const vector<vector<int>> Prod_dureeparposte{   { 4, 5 },
 /////////////////////////////////////////////////////////////////////////
 //////////////////// | DEBUT DECLARE ETU | /////////////////
 /////////////////////////////////////////////////////////////////////////
-
+int nb_type_prod; // nombre de types de produits
+int index_prod; // indice indiquant le type de produit
 
 
 
@@ -159,14 +160,15 @@ int main(int argc, char **argv)
 	////// | MARQUAGE INITIAL | ////////
     ************************************************* */
 	M[0]=1;
-	M[100] = Prod_qte[0];
-	
 	display();
 
     ///////////////////////////////////////////////////////////////////
     ///////////////////// | DEBUT INIT ETU | ///////////////////
     ///////////////////////////////////////////////////////////////////
-	nb_type = Prod_qte.size()
+	nb_type_prod = Prod_type.size();
+	index_prod = 0; // initialisation pour pointer sur le premier produit de la liste des types de produits
+
+	M[205] = nb_type_prod;
 	
 
 
@@ -186,10 +188,10 @@ int main(int argc, char **argv)
             if(M[0])
             {
 				/*!
-				* \b nom_transition:  transition_test vide a supprimer ou modifier
-				* \arg  courte description
+				* \b T1:  init aiguillages et produit
+				* \arg  positionnement des aiguillages 
 				* \arg \b Precondition: M[0] && M[PlaceAmontBis] && CONDITIONS_debut
-				* \arg \b Postcondition: M[PlaceAval]++; M[PlaceAvalBis]++
+				* \arg \b Postcondition: M[101]++; M[201]++
 				*/
 				M[0]--;
 				//ACTION….
@@ -201,17 +203,31 @@ int main(int argc, char **argv)
 				aiguillage.Gauche(12);
 				//cmd.Stop_PS(2);
 				M[101]++;
+				M[201]++;
 				display();
             }
-			if(M[101] && capteur.get_PS(6)){
 
+			if(M[101] && capteur.get_PS(6)){
+				/*!
+				* \b T2:  aiguillage A02 mise en place
+				* \arg  positionnement de aiguillage 2 à gauche pour laisser sortie la navette de la zone de travail 
+				* \arg \b Precondition: M[101] && capteur.get_PS(6)
+				* \arg \b Postcondition: M[102]++;
+				*/
 				M[101]--;
 				aiguillage.Gauche(2);
 				M[102]++;
 				display();
 			}
-			if(M[102] && M[100]){
-				
+
+			if(M[201] && M[203]){
+				/*!
+				* \b T3:  Ajout d'un produit
+				* \arg  Ajout d'une unité de produit dans la chaine 
+				* \arg \b Precondition: M[201] && M[203]
+				* \arg \b Postcondition: M[202]++;
+				*/
+
 				M[102]--;
 				M[100]--;
 				robot.AjouterProduit(Prod_seqdeposte[i][i], Prod_type[i]);
@@ -219,6 +235,44 @@ int main(int argc, char **argv)
                 cout << "duree poste=" << Prod_dureeparposte[i][i] << endl;
 				display();
 			}
+
+			if(){
+				/*!
+				* \b T4:  Verification de la fin de fabrication d'un produit
+				* \arg  Vérifie si le produit est fabriquer pour pouvoir lancer le prochain
+				* \arg \b Precondition: robot.TacheFinie()
+				* \arg \b Postcondition: M[201]++;
+				*/
+				M[201]++;
+				display();
+			}
+
+			if(M[205] && (M[203]==0)){
+				/*!
+				* \b T6:  Lancement d'un nouveau type produit
+				* \arg  Vérifie si la fabrication d'un type de produit est terminer pour pouvoir lancer le prochain
+				* \arg \b Precondition: M[205] && (M[203]==0)
+				* \arg \b Postcondition: M[204]=index_prod + 1;
+				*/
+				M[205]--;
+				M[204]=index_prod + 1;
+				display();
+			}
+
+			if(M[204]>0){
+				/*!
+				* \b T5:  mise à jour de la quantité à produire
+				* \arg  Charger dans le compteur de produit a fabriquer avec la nouvelle quantité
+				* \arg \b Precondition: M[204]>0
+				* \arg \b Postcondition: M[203]=Prod_qte(M[204]-1);
+				*/
+				
+				M[203]=Prod_qte(M[204]-1);
+				M[204]--;
+				display();
+			}
+			
+			
 			
 			
 
