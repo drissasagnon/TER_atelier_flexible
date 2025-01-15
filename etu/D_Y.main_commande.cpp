@@ -101,7 +101,6 @@ int main(int argc, char **argv)
 	///////////  | Debut du Petri plus bas |  //////////
      ************************************************* */
 
-
 	ros::init(argc, argv, "commande");
 	ros::NodeHandle noeud;
 
@@ -160,6 +159,7 @@ int main(int argc, char **argv)
 	////// | MARQUAGE INITIAL | ////////
     ************************************************* */
 	M[0]=1;
+	
 	display();
 
     ///////////////////////////////////////////////////////////////////
@@ -167,9 +167,9 @@ int main(int argc, char **argv)
     ///////////////////////////////////////////////////////////////////
 	nb_type_prod = Prod_type.size();
 	index_prod = 0; // initialisation pour pointer sur le premier produit de la liste des types de produits
-	index_seq = 0; // initialisation pour pointer sur la première sequence de la gamme
+	int index_seq = 0; // initialisation pour pointer sur la première sequence de la gamme
 	M[205] = nb_type_prod;
-	
+	M[214] = 1;
 
 
     ///////////////////////////////////////////////////////////////////
@@ -245,7 +245,7 @@ int main(int argc, char **argv)
 				* \arg \b Postcondition: M[203]=Prod_qte(M[204]-1); M[206]++;
 				*/
 				
-				M[203]=Prod_qte(M[204]-1);
+				M[203]=Prod_qte[M[204]-1];
 				M[206]++;
 				M[204]--;
 				display();
@@ -316,13 +316,124 @@ int main(int argc, char **argv)
 				M[211]++;
 				display();
 			}
-			
+			if(M[211] && robot.TacheFinie(POSTE_3)){
+				/*!
+				* \b T211:  vérifier si est finie au poste 3
+				* \arg  fin fabrication du produit au poste 3
+				* \arg \b Precondition: M[211] && robot.TacheFinie()
+				* \arg \b Postcondition: M[212]++;
+				*/
+				M[211]--;
+				M[212]++;
+				display();
+			}
 
-			
-			
-			
-			
+			if(M[212] && M[208]==0){
+				/*!
+				* \b T208_212:  Evacuation du produit au poste 3
+				* \arg  fin de fabrication au poste 3 et évacuation
+				* \arg \b Precondition: M[212] && M[208]==0
+				* \arg \b Postcondition: M[201]++; M[206]++;
+				*/
+				M[212]--;
+				robot.Evacuer();
+				M[201]++;
+				M[206]++;
+				display();
+			}
+			if(M[212] && M[208]>0 && M[214]){
+				/*!
+				* \b T212_214:  Deplacement du produit du poste 3 vers le poste 4
+				* \arg  fin de tâche au poste 3 et son deplacement vers le poste 4
+				* \arg \b Precondition:  M[212] && M[208]>0 && M[214]
+				* \arg \b Postcondition: M[213]++; 
+				*/
+				M[212]--;
+				M[214]--;
+				M[208]--;
+				robot.DeplacerPiece(ROBOT_2,3,4);
+				index_seq++;
+				M[213]++;
+				display();
+			}
+			// --------- Poste 4 ------------------------------------------------
+			if(M[213] && robot.FinDeplacerPiece(ROBOT_2)){
+				/*!
+				* \b T213:  Fin de deplacement du produit sur le poste 4
+				* \arg  fin le poste 4
+				* \arg \b Precondition:  M[213];
+				* \arg \b Postcondition: M[215]++; M[214]++;
+				*/
+				M[213]--;
+				M[214]++;
+				M[215]++;
+				display();
+			}
+			if(M[215]){
+				/*!
+				* \b T215:  fabrication d'un produit au poste 4
+				* \arg  fabrication en cours au poste 4
+				* \arg \b Precondition: M[215]
+				* \arg \b Postcondition: M[216]++;
+				*/
+				M[215]--;
+				robot.FaireTache(Prod_seqdeposte[index_prod-1][index_seq], Prod_dureeparposte[index_prod-1][index_seq]);
+                cout << "duree poste=" << Prod_dureeparposte[index_prod-1][index_seq] << endl;
+				M[216]++;
+				display();
+			}
 
+			if(M[216] && M[214] && robot.TacheFinie(POSTE_4)){
+				/*!
+				* \b T216_214:  Deplacement du produit du poste 4 vers le poste 3
+				* \arg  fin de tâche au poste 4 et son deplacement vers le poste 3
+				* \arg \b Precondition:  M[216] && M[214] && robot.TacheFinie()
+				* \arg \b Postcondition: M[217]++; 
+				*/
+				M[216]--;
+				M[214]--;
+				robot.DeplacerPiece(ROBOT_2,4,3);
+				M[217]++;
+				display();
+			}
+			if(M[217] && M[208]==0 && robot.FinDeplacerPiece(ROBOT_2)){
+				/*!
+				* \b T213:  Fin de deplacement du produit sur le poste 3
+				* \arg   Le produit est fini et prêt à être évacuer
+				* \arg \b Precondition:  M[217] && M[208]==0 && robot.FinDeplacerPiece()
+				* \arg \b Postcondition: M[214]++; M[212]++;
+				*/
+				M[217]--;
+				M[214]++;
+				M[212]++;
+				display();
+			}
+			if(M[217] && M[208]>0 && robot.FinDeplacerPiece(ROBOT_2)){
+				/*!
+				* \b T213:  Fin de deplacement du produit sur le poste 3
+				* \arg   La tâche au poste 4 est fini et les produit va au poste trois pour la tâche suivant
+				* \arg \b Precondition:  M[217] && M[208]>0 && robot.FinDeplacerPiece()
+				* \arg \b Postcondition: M[214]++; M[210]++;
+				*/
+				M[208]--;
+				index_seq++;
+				M[217]++;
+				display();
+			}
+
+			if(M[207] && M[209] && Prod_seqdeposte[index_prod-1][index_seq] == POSTE_4){
+				/*!
+				* \b T207_209_4:  Ajout d'un produit au poste 4
+				* \arg  Vérifie si le poste de départ de la gamme d'un produit est le poste 4
+				* \arg \b Precondition: M[207] && Prod_seqdeposte[index_prod-1][index_seq] == POSTE_4 && M[209]
+				* \arg \b Postcondition: M[215]++;
+				*/
+				M[207]--;
+				M[209]--;
+				robot.AjouterProduit(Prod_seqdeposte[index_prod-1][index_seq], Prod_type[index_prod-1]);
+                M[215]++;
+				display();
+			}
 
 
 
