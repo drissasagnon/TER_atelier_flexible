@@ -1,0 +1,8 @@
+prefix=/home/drissasgn/Desktop/Projects/TER_atelier_flexible/celluleflexible/ros_ws/install
+
+Name: launcher
+Description: Description of launcher
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
