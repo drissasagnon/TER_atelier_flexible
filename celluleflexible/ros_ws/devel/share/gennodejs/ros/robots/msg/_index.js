@@ -1,12 +1,12 @@
 
 "use strict";
 
-let Msg_numrobot = require('./Msg_numrobot.js');
-let FaireTacheMsg = require('./FaireTacheMsg.js');
 let MoveRobot = require('./MoveRobot.js');
+let FaireTacheMsg = require('./FaireTacheMsg.js');
+let Msg_numrobot = require('./Msg_numrobot.js');
 
 module.exports = {
-  Msg_numrobot: Msg_numrobot,
-  FaireTacheMsg: FaireTacheMsg,
   MoveRobot: MoveRobot,
+  FaireTacheMsg: FaireTacheMsg,
+  Msg_numrobot: Msg_numrobot,
 };

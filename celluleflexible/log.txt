@@ -1,3 +1,27 @@
-Creation fichier log: Sun Dec 14 10:19:16 2025
+Creation fichier log: Mon Dec 29 22:57:22 2025
 
-NouveauProduit: 14 :18.95
+NouveauProduit: 34 :1.05
+TempoT: 34: 3: 3
+NouveauProduit: 34 :15.20
+TempoT: 34: 3: 3
+TempoT: 34: 4: 4
+Sortie :34 :33 :43 :0 :44.55
+NouveauProduit: 34 :44.75
+TempoT: 34: 3: 3
+TempoT: 34: 4: 4
+Sortie :34 :33 :43 :0 :85.45
+TempoT: 34: 4: 4
+Sortie :34 :33 :43 :0 :107.40
+NouveauProduit: 14 :107.50
+TempoT: 14: 4: 2
+NouveauProduit: 14 :120.65
+TempoT: 14: 4: 2
+TempoT: 14: 3: 4
+TempoT: 14: 3: 2
+OperationPosteVide: 4
+TempoT: 14: 3: 4
+TempoT: 14: 4: 3
+TempoT: 14: 3: 2
+OperationPosteVide: 4
+Sortie :14 :43 :33 :33 :200.90
+OperationPosteVide: 3

@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 	std_msgs::Int32 msg_nbNavettes;
 	msg_nbNavettes.data=nbNavettes;
 	pub_spawnShuttles.publish(msg_nbNavettes);
-	
+
 
 	cmd.Initialisation();
 	for(int i=0;i<PlaceFin;i++) M[i]=0;
@@ -164,9 +164,9 @@ int main(int argc, char **argv)
 	///////////////////////////////////////////////////////////////////
 	int nb_type_prod = Prod_type.size();
 	int index_prod = 0; // initialisation pour pointer sur le premier produit de la liste des types de produits
-	int index_seq = 0; // initialisation pour pointer sur la premiÃ¨re sequence de la gamme
-	M[205] = nb_type_prod;
-	M[214] = 1;
+	int index_seq = 0; // initialisation pour pointer sur la première sequence de la gamme
+	M[205] = nb_type_prod; // initialisation du nombre de type de produit
+	M[214] = 1;      // initialisation de la place (correspondant au robot 2 avec un jeton), étant donné qu'on ne considère que les postes 3 et 4
 	M[224] = 1;
 
 	int qte_totale = 0; 
@@ -216,14 +216,10 @@ int main(int argc, char **argv)
 		* \b T2: aiguillage A02 mise en place
 		* \arg positionnement de aiguillage 2 Ã gauche pour laisser sortie la navette de la zone de travail 
 		* \arg \b Precondition: M[101] && capteur.get_PS(6)
-		* \arg \b Postcondition: 
+		* \arg \b Postcondition: transition puis 
 		*/
 
 		M[101]--;
-		if (!M[101])
-		{
-			cout<<"M[101] has no token any more :) \n";
-		}else{ cout<<"M[101] still has a token :( \n";}
 		
 		aiguillage.Gauche(2);
 	
@@ -237,7 +233,7 @@ int main(int argc, char **argv)
 	if(M[205] && M[224] && (M[203]==0)){
 		/*!
 		* \b T205: Lancement d'un nouveau type produit
-		* \arg VÃ©rifie si la fabrication d'un type de produit est terminer pour pouvoir lancer le prochain
+		* \arg Vérifie si la fabrication d'un type de produit est terminer pour pouvoir lancer le prochain
 		* \arg \b Precondition: M[205] && (M[203]==0)
 		* \arg \b Postcondition: M[204]=index_prod + 1;
 		*/
@@ -250,10 +246,10 @@ int main(int argc, char **argv)
 
 	if(M[204]>0){
 		/*!
-		* \b T204: mise Ã jour de la quantitÃ© Ã produire
-		* \arg Charger dans le compteur de produit a fabriquer avec la nouvelle quantitÃ©
+		* \b T204: mise Ã jour de la quantité Ã produire pour le type de produit indexé
+		* \arg Charger dans le compteur de produit a fabriquer avec la nouvelle quantité
 		* \arg \b Precondition: M[204]>0
-		* \arg \b Postcondition: M[203]=Prod_qte(M[204]-1); M[206]++;
+		* \arg \b Postcondition: M[203]=Prod_qte(M[204]-1); M[206]=2;
 		*/
 		
 		M[203]=Prod_qte[M[204]-1];
@@ -264,8 +260,8 @@ int main(int argc, char **argv)
 
 	if(M[201] && M[203]>0){
 		/*!
-		* \b T201_203: lancement de la production d'une unitÃ© d'un type de produit.
-		* \arg AprÃ¨s vÃ©rification que la quantitÃ© Ã produire n'est pas atteinte
+		* \b T201_203: lancement de la production d'une unitÃ© d'un type de produit indexé
+		* \arg Après vérification que la quantité Ã produire n'est pas atteinte
 		* \arg \b Precondition: M[201] && M[203]
 		* \arg \b Postcondition: M[202]++;
 		*/
@@ -275,7 +271,7 @@ int main(int argc, char **argv)
 		M[207]++;
 		display();
 	}
-		if(M[206]>0){
+	if(M[206]>0 && (M[208]==0)){
 		/*!
 		* \b T4: Initialisation du nombre de sÃ©quence dans une gamme
 		* \arg VÃ©rifie si le produit est fabriquer pour pouvoir lancer le prochain en initialisant le nouveau nombre de sÃ©quence
@@ -289,7 +285,7 @@ int main(int argc, char **argv)
 
 	if(M[208]>0 && M[206]){
 		/*!
-		* \b T208: initialisation de pour pointer sur la premiÃ¨re sequence d'une gamme
+		* \b T208: initialisation de pour pointer sur la première sequence d'une gamme
 		* \arg 
 		* \arg \b Precondition: M[208]>0 && M[206]
 		* \arg \b Postcondition: M[209]++;
@@ -300,12 +296,15 @@ int main(int argc, char **argv)
 		M[209]++;
 		display();
 	}
-	// ---- Poste 3 ------------------------------------------------
+
+	/***************************************************************
+	// ---------------------- POSTE 3 --------------------------------
+	******************************************************************/
 	if(M[207] && M[209] && Prod_seqdeposte[index_prod-1][index_seq] == POSTE_3){
 		/*!
-		* \b T207_209: Ajout d'un produit au poste 3
+		* \b T207_209_POSTE3: Ajout d'un produit au poste 3
 		* \arg VÃ©rifie si le poste de dÃ©part de la gamme d'un produit est le poste 3
-		* \arg \b Precondition: M[207] && Prod_seqdeposte[index_prod-1][index_seq] == POSTE_3 , M[209]
+		* \arg \b Precondition: M[207] && M[209] && Prod_seqdeposte[index_prod-1][index_seq] == POSTE_3
 		* \arg \b Postcondition: M[210]++;
 		*/
 		M[207]--;
@@ -324,13 +323,13 @@ int main(int argc, char **argv)
 		*/
 		M[210]--;
 		robot.FaireTache(Prod_seqdeposte[index_prod-1][index_seq], Prod_dureeparposte[index_prod-1][index_seq]);
-		cout << "duree poste=" << Prod_dureeparposte[index_prod-1][index_seq] << endl;
+		cout << "duree poste = " << Prod_dureeparposte[index_prod-1][index_seq] << endl;
 		M[211]++;
 		display();
 	}
 	if(M[211] && robot.TacheFinie(POSTE_3)){
 		/*!
-		* \b T211: vÃ©rifier si est finie au poste 3
+		* \b T211: vÃ©rifier si la tâche est finie au poste 3
 		* \arg fin fabrication du produit au poste 3
 		* \arg \b Precondition: M[211] && robot.TacheFinie()
 		* \arg \b Postcondition: M[212]++;
@@ -418,7 +417,7 @@ int main(int argc, char **argv)
 	if(M[213] && robot.FinDeplacerPiece(ROBOT_2)){
 		/*!
 		* \b T213: Fin de deplacement du produit sur le poste 4
-		* \arg fin le poste 4
+		* \arg Deplacement du produit en cours de fabrication du poste 3 vers le poste 4, puis libération du robot 2
 		* \arg \b Precondition: M[213];
 		* \arg \b Postcondition: M[215]++; M[214]++;
 		*/
@@ -436,7 +435,7 @@ int main(int argc, char **argv)
 		*/
 		M[215]--;
 		robot.FaireTache(Prod_seqdeposte[index_prod-1][index_seq], Prod_dureeparposte[index_prod-1][index_seq]);
-		cout << "duree poste=" << Prod_dureeparposte[index_prod-1][index_seq] << endl;
+		cout << "duree poste = " << Prod_dureeparposte[index_prod-1][index_seq] << endl;
 		M[216]++;
 		display();
 	}
@@ -453,7 +452,7 @@ int main(int argc, char **argv)
 		M[217]++;
 		display();
 	}
-	
+
 
 	if(M[217] && M[208]==0 && M[214]){
 		/*!
